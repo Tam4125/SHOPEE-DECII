@@ -18,16 +18,30 @@ public class MLModelService {
     public MLModelService() throws Exception {
         env = OrtEnvironment.getEnvironment();
 
-        // Load ONNX file from resources/model/
-        URL modelUrl = Objects.requireNonNull(
-                getClass().getClassLoader().getResource("model/logreg.onnx"),
+        // 1. Get the model as an InputStream from the classpath
+        try (java.io.InputStream modelStream = Objects.requireNonNull(
+                getClass().getClassLoader().getResourceAsStream("model/logreg.onnx"),
                 "ONNX model file not found in resources/model/"
-        );
+        )) {
+            // 2. Create a temporary file to extract the model to
+            java.nio.file.Path tempModelPath = java.nio.file.Files.createTempFile("onnx-model-", ".onnx");
 
-        String modelPath = Paths.get(modelUrl.toURI()).toString();
+            // 3. Copy the model bytes from the JAR (stream) to the temporary file
+            java.nio.file.Files.copy(modelStream, tempModelPath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
 
-        session = env.createSession(modelPath,
-                new OrtSession.SessionOptions());
+            // 4. Get the path of the temporary file and use it to create the session
+            String modelPath = tempModelPath.toString();
+
+            session = env.createSession(modelPath,
+                    new OrtSession.SessionOptions());
+
+            // 5. IMPORTANT: Register a shutdown hook to delete the temp file
+            // after the application exits, though the OS usually cleans /tmp.
+            tempModelPath.toFile().deleteOnExit();
+
+        } catch (java.io.IOException e) {
+            throw new RuntimeException("Failed to load or copy ONNX model.", e);
+        }
     }
 
     public float predict(UserForML user) throws OrtException  {
