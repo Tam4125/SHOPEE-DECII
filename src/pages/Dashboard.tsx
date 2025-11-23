@@ -1,37 +1,63 @@
-import {useMemo, useState} from "react";
-import {mockUsers, type User} from "../../data/mockUsers.ts";
-import {StatCard} from "../../components/StatCard.tsx";
-import {ClusterFilter} from "../../components/ClusterFilter.tsx";
-import {UserTable} from "../../components/UserTable.tsx";
-import {BarChartIndustry} from "../../components/BarChartIndustry.tsx";
-import {UserSearch} from "../../components/UserSearch.tsx";
+import {useEffect, useState} from "react";
 import UserModal from "../../components/UserModal.tsx";
 import ClusterPieChart from "../../components/ClusterPieChart.tsx.tsx";
 import ClusterBarChart from "../../components/ClusterBarChart.tsx";
 import AgeLineChart from "../../components/AgeLineChart.tsx";
 import RadarSegmentChart from "../../components/RadarSegmentChart.tsx";
+import {fetchClusterStat, fetchUserById, predictUser} from "../lib/api.ts";
 
 
 export const Dashboard = () => {
     const [searchId, setSearchId] = useState("");
-    const [selectedUser, setSelectedUser] = useState(null);
+    const [selectedUser, setSelectedUser] = useState<any | null>(null);
+    const [clusterData, setClusterData] = useState<any[]>([]);
+    const [label, setLabel] = useState(0);
+    const [ageData, setAgeData] = useState<any[]>([]);
+    // const [loading, setLoading] = useState(true);
 
-    const handleSearch = () => {
-        const user = mockUsers.find(u => u.user_id === Number(searchId));
-        setSelectedUser(user || null);
+    // Load dashboard stats from backend
+    useEffect(() => {
+
+        const loadData = async () => {
+            const dataStat = await fetchClusterStat();
+
+            const clusterCountObj = dataStat.clusterCount;
+            const avgAgeObj = dataStat.avgAge;
+
+            const clusterArray = Object.keys(clusterCountObj).map(key => ({
+                name:
+                    key === "0" ? "Loyal Users" :
+                        key === "1" ? "Potential Users" :
+                            key === "2" ? "Deal Hunters" : `Cluster ${key}`,
+                value: clusterCountObj[key]
+            }));
+
+            const ageArray = Object.keys(avgAgeObj).map(key => ({
+                cluster:
+                    key === "0" ? "Loyal" :
+                        key === "1" ? "Potential" :
+                            key === "2" ? "Deal Hunter" : `Cluster ${key}`,
+                avgAge: avgAgeObj[key]
+            }));
+
+            setClusterData(clusterArray);
+            setAgeData(ageArray);
+            // setLoading(false);
+        };
+        loadData();
+    }, []);
+
+    const handleSearch = async () => {
+        try {
+            const user = await fetchUserById(searchId);
+            setSelectedUser(user || null);
+            const predictedlabel = await predictUser(searchId);
+            setLabel(predictedlabel);
+        } catch (error: any) {
+            throw new Error("Failed to fetch user");
+        }
     };
 
-    const clusterCount = [
-        { name: "Loyal Users", value: 12 },
-        { name: "Potential Users", value: 19 },
-        { name: "Deal Hunters", value: 9 },
-    ];
-
-    const ageData = [
-        { cluster: "Loyal", avgAge: 34 },
-        { cluster: "Potential", avgAge: 28 },
-        { cluster: "Deal", avgAge: 31 },
-    ];
 
     const radarData = [
         { metric: "Repeat Purchase", score: 85 },
@@ -60,13 +86,13 @@ export const Dashboard = () => {
 
             {/* Charts Grid */}
             <div className="grid grid-cols-2 gap-6">
-                <ClusterPieChart data={clusterCount} />
-                <ClusterBarChart data={clusterCount} />
+                <ClusterPieChart data={clusterData} />
+                <ClusterBarChart data={clusterData} />
                 <AgeLineChart data={ageData} />
                 <RadarSegmentChart data={radarData} />
             </div>
 
-            <UserModal user={selectedUser} onClose={() => setSelectedUser(null)} />
+            <UserModal user={selectedUser} label={label} onClose={() => setSelectedUser(null)} />
         </div>
     );
 };
