@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "https://shopee-decii-web.vercel.app", allowCredentials = "true")
+@CrossOrigin(origins = "https://shopee-decii.vercel.app", allowCredentials = "true")
 public class UserController {
 
     @Autowired
