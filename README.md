@@ -1,22 +1,22 @@
 # Shopee Decii
 
-**Khẩu hiệu:** Your decision, our duty  
+**Slogan:** Your decision, our duty  
 
-## 1. Giới thiệu
-Trong bối cảnh thị trường thương mại điện tử cạnh tranh khốc liệt, Shopee đang đối mặt với thách thức tối ưu hóa ngân sách marketing và giữ chân khách hàng. Nhóm khách hàng "Deal Hunters" – những người chỉ giao dịch khi có khuyến mãi lớn và rời đi ngay sau đó – làm giảm tỷ lệ giữ chân khách hàng sau các mùa Mega Sale.  
+## 1. Introduction
+In the highly competitive e-commerce market, Shopee faces significant challenges in optimizing marketing budgets and retaining customers. The "Deal Hunters" customer group – those who only make purchases during large promotions and leave immediately afterward – reduces customer retention rates after Mega Sale events.  
 
-Dự án **Shopee Decii** ra đời nhằm giải quyết vấn đề này thông qua ứng dụng **Trí tuệ nhân tạo (AI)** và **Học máy (ML)** để phân tích hành vi người dùng, dự đoán xu hướng rời bỏ và tối ưu hóa chiến lược giữ chân khách hàng.
+The **Shopee Decii** project was created to address this issue by leveraging **Artificial Intelligence (AI)** and **Machine Learning (ML)** to analyze user behavior, predict churn trends, and optimize customer retention strategies.
 
-## 2. Mục tiêu dự án
-- **Ngắn hạn (Dự đoán):** Phân loại khách hàng có khả năng quay lại trong 6 tháng tới, phục vụ các chiến lược ngắn hạn.  
-- **Dài hạn (Phân khúc):** Phân cụm khách hàng thành 3 nhóm chiến lược:
+## 2. Project Objectives
+- **Short-term (Prediction):** Classify customers likely to return within the next 6 months, supporting short-term strategies.  
+- **Long-term (Segmentation):** Cluster customers into three strategic groups:
   - Deal Hunter  
-  - Khách hàng Tiềm năng  
-  - Khách hàng Trung thành
+  - Potential Customer  
+  - Loyal Customer  
 
-## 3. Cấu trúc Repository
-Gồm 4 branches:
-- **main**: Chứa code frontend demo tích hợp mô hình sau khi huấn luyện (ReactJS)
-- **frontend**: Code frontend demo tích hợp mô hình (ReactJS)
-- **backend**: Code backend demo tích hợp mô hình (Spring Boot)
-- **data_model**: Chứa dataset và tất cả các file Jupyter Notebook dùng xuyên suốt trong quá trình xây dựng và huấn luyện mô hình
+## 3. Repository Structure
+The repository includes 4 branches:
+- **main**: Contains frontend code demo deployment of the trained model (ReactJS)  
+- **frontend**: Frontend code demo deployment of the trained model (ReactJS)  
+- **backend**: Backend code demo deployment of the trained model (Spring Boot)  
+- **data_model**: Contains datasets and all Jupyter Notebook files used throughout the model building and training process
